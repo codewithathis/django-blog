@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+    <h2 style="text-align:center; margin-bottom: 2rem;">📰 Latest Blog Posts</h2>
+{% endblock page_title %}
+
+{% block page_content %}
+    <div class="post-list">
+        {% if posts %}
+            {% for post in posts %}
+                <article class="post-card">
+                    <header>
+                        <h3>
+                            <a href="{% url 'blog_detail' post.pk %}">{{ post.title }}</a>
+                        </h3>
+                        <div class="meta">
+                            <time datetime="{{ post.created_on|date:'Y-m-d' }}">
+                                📅 {{ post.created_on|date:"M d, Y" }}
+                            </time>
+                            {% if post.categories.all %}
+                                <span class="categories">
+                                    {% for category in post.categories.all %}
+                                        <a href="{% url 'blog_category' category.name %}" class="tag">
+                                            #{{ category.name }}
+                                        </a>
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </header>
+
+                    <p>{{ post.body|truncatewords:40 }}</p>
+
+                    <footer>
+                        <a href="{% url 'blog_detail' post.pk %}" class="read-more">Read more →</a>
+                    </footer>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p style="text-align:center;">No blog posts found yet. Stay tuned!</p>
+        {% endif %}
+    </div>
+
+    <style>
+        .post-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .post-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .post-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .post-card h3 a {
+            text-decoration: none;
+            color: #0078d4;
+        }
+
+        .post-card h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+
+        .tag {
+            background: #e7f3ff;
+            color: #0078d4;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            margin-right: 0.4rem;
+        }
+
+        .tag:hover {
+            background: #0078d4;
+            color: #fff;
+        }
+
+        .read-more {
+            text-decoration: none;
+            color: #0078d4;
+            font-weight: 600;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock page_content %}
